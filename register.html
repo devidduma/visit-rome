@@ -1,0 +1,244 @@
+﻿<!-- By the courtesy of Aleksia Perdhiku at Epoka University-->
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="it">
+
+
+<head>
+
+	<meta charset="UTF-8" >
+
+	<!-- UTF-8 A character in UTF8 can be from 1 to 4 bytes long. 
+  UTF-8 can represent any character in the Unicode standard. 
+  UTF-8 is backwards compatible with ASCII. UTF-8 is the 
+  preferred encoding for e-mail and web pages-->
+
+	<meta name="description" content="Free Web tutorials" >
+	<meta name="keywords" content="HTML,CSS,XML,JavaScript" >
+	<meta name="author" content="John Doe" >
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" >
+
+	<title>Register</title>
+
+	<style type="text/css">
+		body {
+			margin: 0;
+			padding: 0;
+			background-image: url("pictures/La-Befana.jpg");
+
+			font-family: "Times New Roman", serif;
+			font-size: x-large;
+		}
+
+		.loginbox {
+			width: 320px;
+			height: 420px;
+			top: 50%;
+			left: 50%;
+			position: absolute;
+			background-color: lightblue;
+			color: white;
+			box-sizing: border-box;
+			transform: translate(-50%, -50%);
+			padding: 70px 30px;
+			box-shadow: 1px 3px 7px darkred;
+			border-radius: 5px;
+		}
+		.feedbackbox {
+			width: 320px;
+			height: 100%;
+			max-height: 70px;
+			top: 90%;
+			left: 50%;
+			position: absolute;
+			background-color: #3B5998;
+			color: white;
+			box-sizing: border-box;
+			transform: translate(-50%, -50%);
+			padding: 5px;
+			box-shadow: 1px 3px 7px #3B5998;
+			border-radius: 5px;
+			text-align: center;
+			font-family: "Informal Roman",serif;
+			font-size: x-large;
+		}
+
+		.avatar {
+			width: 100px;
+			height: 100px;
+			border-radius: 50%;
+			left: 100px;
+			top: -50px;
+			position: absolute;
+			box-shadow: 1px 1px 5px rgba(0, 0, 0, 1);
+		}
+
+		.loginbox span,
+		p,
+		input[type=submit] {
+			margin: 0;
+			padding: 0;
+			font-style: normal;
+			text-shadow: 1px 2px 2px gray;
+		}
+
+		.loginbox input[type=login],
+		input[type=password],
+		input[type=text] {
+			width: 100%;
+			margin-bottom: 10%;
+		}
+
+		.submit {
+			margin-top: 20px;
+			padding: 0;
+			width: 100px;
+			height: 30px;
+			font-size: 24px;
+			background-color: white;
+			position: absolute;
+			left: 100px;
+			border-radius: 50%;
+			box-shadow: 1px 1px 5px darkblue;
+			color: black;
+		}
+
+		.submit:hover {
+			background-color: lightyellow;
+		}
+
+		a {
+			text-decoration: none;
+			color: black;
+		}
+	</style>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" type="application/javascript">
+	</script>
+
+</head>
+
+<body>
+
+<script type="application/javascript" >
+
+	function AjaxQueryUsersJS(user, password) {
+		var statusCode;
+
+		window.alert("Executing Ajax Query with server...");
+
+		$.ajax('databaseCreateUsers.php', {
+			type: 'POST',
+			contentType: 'application/x-www-form-urlencoded',
+			data: {
+				user: user,
+				password: password
+			},
+			async: false,
+			success: function(data, textStatus, jqXHR) {
+				statusCode = 200;
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				statusCode = jqXHR.status;
+			}
+		});
+
+		return statusCode;
+	}
+
+	function chkPassword() {
+
+		const w = document.getElementById('login');
+		const y = document.getElementById('password');
+
+			/** Ajax call to query database and see if user and password match -------- **/
+			const statusCode = AjaxQueryUsersJS(w.value, y.value);
+			//document.getElementById("button2").innerHTML = passwdTrue;
+
+			document.getElementById("hiddenbox").style.display = 'block';
+			if (statusCode === 200) {
+				x = "Server returned status code 200. Registration successful!";
+				document.getElementById("hiddenbox").style.backgroundColor = "green";
+				document.getElementById("hiddenbox").style.boxShadow = "1px 3px 7px green";
+				document.getElementById("button").innerHTML = x;
+				//window.alert(x);
+				// window.location.replace("Real Madrid DE x4.html");
+				setTimeout(function() {
+					window.open('login.html', '_blank');
+				}, 2000);
+				return true;
+			} else if(statusCode === 422) {
+				document.getElementById("hiddenbox").style.backgroundColor = "#3B5998";
+				document.getElementById("hiddenbox").style.boxShadow = "1px 3px 7px #3B5998";
+				x = "Server returned status code 422. Username already exists!"
+				document.getElementById("button").innerHTML = x;
+				return false;
+			} else if(statusCode === 500) {
+				document.getElementById("hiddenbox").style.backgroundColor = "#3B5998";
+				document.getElementById("hiddenbox").style.boxShadow = "1px 3px 7px #3B5998";
+				x = "Server returned status code 500. Server Error."
+				document.getElementById("button").innerHTML = x;
+				return false;
+			} else if(statusCode === 400) {
+				document.getElementById("hiddenbox").style.backgroundColor = "#3B5998";
+				document.getElementById("hiddenbox").style.boxShadow = "1px 3px 7px #3B5998";
+				x = "Server returned status code 400. Bad Request."
+				document.getElementById("button").innerHTML = x;
+				return false;
+			} else {
+				document.getElementById("hiddenbox").style.backgroundColor = "red";
+				document.getElementById("hiddenbox").style.boxShadow = "1px 3px 7px red";
+				x = "Something went totally wrong."
+				document.getElementById("button").innerHTML = x;
+				return false;
+			}
+
+	}
+
+</script>
+
+	<div class="loginbox">
+        <img src="pictures/Stadio-Olimpico.jpg" alt="image" class="avatar"/>
+
+		<h2 align="center" style="font-size: 30px; text-shadow: 1px 2px 2px gray;">Register Page</h2>
+
+		<label>
+			<span>Username</span>
+			<input id="login" size="10" type="text"/>
+			<br />
+		</label>
+
+		<label>
+			<span>Password</span>
+			<input id="password" type="password" value="" />
+			<br />
+			<span><input type="checkbox" onclick="showPassword()" />Show Password</span>
+		</label>
+
+		<br /><br />
+
+		<input type="submit" class="submit" onclick="chkPassword()" value="Submit" />
+		<br /><br /><br />
+
+
+		<script type="application/javascript">
+
+			function showPassword() {
+				var x = document.getElementById("password");
+				if (x.type === "password") {
+					x.type = "text";
+				} else {
+					x.type = "password";
+				}
+			}
+
+		</script>
+
+	</div>
+
+	<div id="hiddenbox" class="feedbackbox" style="display: none;">
+		<p id="button" style="display: inherit;"></p>
+	</div>
+</body>
+
+</html>
